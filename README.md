@@ -40,6 +40,5 @@ npm run preview
 - Vite
 
 ## Other libraries
-- Jotai - State Management
+- Recoil - State Management
 - Wouter - Router
-- 
