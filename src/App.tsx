@@ -1,11 +1,21 @@
-import './App.css'
+import { Route, Switch } from "wouter";
+import "./App.css";
+import { DashboardPage, ErrorPage, HomePage } from "./pages";
 
 function App() {
   return (
-    <>
-     <h1>Queue</h1>
-    </>
-  )
+    <Switch>
+      <Route path="/">
+        <HomePage />
+      </Route>
+      <Route path="/dashboard">
+        <DashboardPage />
+      </Route>
+      <Route>
+        <ErrorPage />
+      </Route>
+    </Switch>
+  );
 }
 
-export default App
+export default App;
