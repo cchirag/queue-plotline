@@ -1,6 +1,2 @@
-import { atom } from "recoil";
-
-export const CounterAtom = atom({
-  key: "CounterAtom",
-  default: 0,
-});
+export { SnackbarState } from "./snackbar.atom";
+export { InitialScheduleState } from "./initial-schedule.atom";
