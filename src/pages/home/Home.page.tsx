@@ -10,7 +10,6 @@ import { SnackbarSeverity } from "../../enums";
 import { Fade } from "react-awesome-reveal";
 import { useSetRecoilState } from "recoil";
 import { InitialScheduleState } from "../../atoms";
-import { useLocation } from "wouter";
 
 export const HomePage = () => {
   const [numberOfPlatforms, setNumberOfPlatforms] = useState(2);
@@ -21,7 +20,6 @@ export const HomePage = () => {
     onFilesSuccessfullySelected: () => {},
   });
   const setMessage = useSnackbar();
-  const [_, navigate] = useLocation();
 
   const handleStartSimulation = async () => {
     await TrainSchedule.isValid(filesContent[0])
@@ -30,7 +28,6 @@ export const HomePage = () => {
           schedule: data,
           platforms: numberOfPlatforms,
         });
-        navigate("/dashboard");
       })
       .catch((error) => {
         setMessage(error, SnackbarSeverity.ERROR);
