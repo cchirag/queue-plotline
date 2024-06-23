@@ -1,0 +1,1 @@
+export type {TrainSchedule} from "./train-schedule.type";
