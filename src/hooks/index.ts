@@ -1,0 +1,1 @@
+export { useInternalClock } from "./use-internal-clock.hook"
