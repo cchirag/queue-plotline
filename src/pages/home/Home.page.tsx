@@ -17,7 +17,7 @@ export const HomePage = () => {
   const setInitialScheduleState = useSetRecoilState(InitialScheduleState);
   const { openFilePicker, filesContent } = useFilePicker({
     multiple: false,
-    accept: ".json",
+    accept: ".csv",
     onFilesSuccessfullySelected: () => {},
   });
   const setMessage = useSnackbar();

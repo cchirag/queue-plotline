@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
+    "csvtojson": "^2.0.10",
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.2.12",
