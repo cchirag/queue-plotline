@@ -4,7 +4,8 @@ import { InternalClock } from "../types";
 export const InternalClockState = atom<InternalClock>({
   key: "InternalClockState",
   default: {
-    hour: 0,
-    minute: 0,
+    day: 0o0,
+    hour: 0o0,
+    minute: 0o0,
   },
 });

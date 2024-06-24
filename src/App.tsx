@@ -2,30 +2,26 @@ import { Route, Switch, useLocation } from "wouter";
 import "./App.css";
 import { DashboardPage, ErrorPage, HomePage } from "./pages";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { InitialScheduleState, InternalClockState } from "./atoms";
+import { SettingsState, InternalClockState } from "./atoms";
 import { useEffect } from "react";
+import { InternalClockUtils } from "./utils";
 
 function App() {
   const [_, navigate] = useLocation();
-  const initialSchedule = useRecoilValue(InitialScheduleState);
+  const settings = useRecoilValue(SettingsState);
   const [internalClock, setInternalClock] = useRecoilState(InternalClockState);
   useEffect(() => {
-    if (initialSchedule) {
+    if (settings.platforms.length > 0 && settings.trains.length > 0) {
       navigate("/dashboard");
     } else {
       navigate("/");
     }
-  }, [initialSchedule]);
+  }, [settings]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setInternalClock((prev) => {
-        const newMinute = prev.minute + 1;
-        const newHour = prev.hour + Math.floor(newMinute / 60);
-        return {
-          hour: newHour % 24,
-          minute: newMinute % 60,
-        };
+        return InternalClockUtils.addMinutes(prev, 1);
       });
     }, 1000);
     return () => clearInterval(interval);

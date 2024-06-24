@@ -1,5 +1,127 @@
-.title{
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  column-gap: 20px;
+  overflow: hidden;
+}
+
+.navbarContainer {
+  width: 18%;
+  height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.logoContainer {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logoContainer img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.contentContainer {
+  width: 82%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: #ffffff;
+  padding: 12px;
+  box-sizing: border-box;
+  row-gap: 12px;
+}
+
+.actionsContainer {
+  width: 100%;
+  min-height: 80px;
+  max-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  margin-top: auto;
+}
+
+.headerContainer {
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  box-sizing: border-box;
+  background-color: var(--primary);
+  border-radius: 12px;
+  color: #ffffff;
+}
+
+.headerContainer h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.headerContainer h3 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.platformsContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  row-gap: 12px;
+  background-color: var(--surface);
+  padding: 12px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.platformsContainerHeader {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-alt);
+  padding: 12px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.platformsContentContainer{
+  width: 100%;
+  height: calc(100vh - 252px);
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+
+.scheduleChartContainer{
+  width: 100%;
+  height: 100%;
 }

@@ -1,0 +1,6 @@
+export enum TrainStatus {
+  SCHEDULED = "SCHEDULED",
+  ARRIVING = "ARRIVING",
+  ARRIVED = "ARRIVED",
+  DEPARTED = "DEPARTED",
+}
