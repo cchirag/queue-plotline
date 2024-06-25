@@ -1,4 +1,4 @@
-import { Priority, TrainStatus } from "../enums";
+import { Priority, TrainImage, TrainStatus } from "../enums";
 import { InternalClock } from "./internal-clock.type";
 
 export type Train = {
@@ -15,4 +15,5 @@ export type Train = {
     startArrival?: InternalClock;
     endDeparture?: InternalClock;
   };
+  trainImage: TrainImage;
 };

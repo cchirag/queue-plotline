@@ -1,5 +1,5 @@
 import { FileContent } from "use-file-picker/types";
-import { Priority, TrainStatus } from "../../enums";
+import { Priority, TrainImage, TrainStatus } from "../../enums";
 import csvtojson from "csvtojson";
 import { InternalClock, Train } from "../../types";
 import { InternalClockUtils } from "../internal-clock/internal-clock.util";
@@ -80,6 +80,8 @@ export class ScheduleUtils {
       );
       train.platform = assignedPlatform;
       train.status = TrainStatus.SCHEDULED;
+      const randomIndex = Math.floor(Math.random() * 5);
+      train.trainImage = Object.values(TrainImage)[randomIndex];
       train.timelines = {
         startArrival: InternalClockUtils.subtractMinutes(actualArrival, 10),
         endDeparture: InternalClockUtils.addMinutes(actualDeparture, 10),

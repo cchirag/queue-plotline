@@ -1,10 +1,11 @@
 import classes from "./train.module.css";
-import trainImage from "../../assets/train.svg";
 import { useEffect, useRef } from "react";
 import { InternalClockUtils } from "../../utils";
-import { useInternalClock } from "../../hooks";
+import { useInternalClock, useTrainImage } from "../../hooks";
 import { TrainStatus } from "../../enums";
 import { Train as TrainType } from "../../types";
+import { useSetRecoilState } from "recoil";
+import { ReportState } from "../../atoms";
 interface TrainProps {
   train: TrainType;
   trackRef: React.RefObject<HTMLImageElement>;
@@ -15,6 +16,9 @@ export const Train = (props: TrainProps) => {
   const { trackRef, train, handleTrainStatus } = props;
   const trainRef = useRef<HTMLImageElement>(null);
   const { clock } = useInternalClock();
+  const setReport = useSetRecoilState(ReportState);
+  const trainImage = useTrainImage(train.trainImage);
+
   const moveTrain = (position: number, time: number) => {
     if (trainRef.current) {
       trainRef.current.style.transition = `transform ${time}s linear`;
@@ -32,7 +36,7 @@ export const Train = (props: TrainProps) => {
     if (trainRef.current && trackRef.current) {
       const trackWidth = trackRef.current.offsetWidth;
       const trainWidth = trainRef.current.offsetWidth;
-      const trainPosition = trackWidth / 2 - trainWidth / 2;
+      const trainPosition = trackWidth / 2 + trainWidth / 2;
       moveTrain(trainPosition, 10);
     }
     if (InternalClockUtils.isEqual(clock, train?.actualArrivalTime!)) {
@@ -44,12 +48,15 @@ export const Train = (props: TrainProps) => {
     if (InternalClockUtils.isEqual(clock, train?.actualDepartureTime!)) {
       if (trainRef.current && trackRef.current) {
         const trackWidth = trackRef.current.offsetWidth;
-        const trainWidth = trainRef.current.offsetWidth;
-        const trainPosition = trackWidth + trainWidth;
+        const trainPosition = trackWidth * 2;
         moveTrain(trainPosition, 10);
       }
-      console.log(`Train ${train?.trainNumber} departing`);
       handleTrainStatus(train?.trainNumber ?? "", TrainStatus.DEPARTED);
+      setReport((prev) => {
+        return {
+          trains: [...prev.trains, train],
+        };
+      });
     }
   };
 
