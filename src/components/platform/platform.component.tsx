@@ -23,7 +23,7 @@ export const Platform = (props: PlatformProps) => {
         train.status !== TrainStatus.DEPARTED
     );
     return trains;
-  }, [platformNumber, stagedSchedule]);
+  }, [platformNumber, stagedSchedule.trains]);
 
   return (
     <div className={classes.platformContainer}>

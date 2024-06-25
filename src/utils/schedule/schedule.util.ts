@@ -82,7 +82,6 @@ export class ScheduleUtils {
     platforms: number[],
     update: boolean
   ): Train[] {
-    // Sort trains by arrival time, priority, and original order
     trains.sort((a, b) => {
       const aArrival = a.arrivalTime;
       const bArrival = b.arrivalTime;
@@ -99,7 +98,7 @@ export class ScheduleUtils {
       if (a.priority !== b.priority) {
         return a.priority.localeCompare(b.priority);
       }
-      return 0; // Keep original order if arrival time and priority are the same
+      return 0;
     });
 
     const platformAvailability: { [key: number]: InternalClock } = {};
@@ -108,10 +107,8 @@ export class ScheduleUtils {
       const { actualArrival, actualDeparture, assignedPlatform } =
         this.assignPlatform(train, platforms, platformAvailability);
 
-      // Update platform availability
       platformAvailability[assignedPlatform] = actualDeparture;
 
-      // Update train details
       train.actualArrivalTime = actualArrival;
       train.actualDepartureTime = actualDeparture;
       train.haltTime = InternalClockUtils.getMinutesDiff(
@@ -121,7 +118,9 @@ export class ScheduleUtils {
       train.platform = assignedPlatform;
       train.status = update ? train.status : TrainStatus.SCHEDULED;
       const randomIndex = Math.floor(Math.random() * 5);
-      train.trainImage = Object.values(TrainImage)[randomIndex];
+      train.trainImage = update
+        ? train.trainImage
+        : Object.values(TrainImage)[randomIndex];
       train.timelines = {
         startArrival: InternalClockUtils.subtractMinutes(actualArrival, 10),
         endArrival: actualArrival,
@@ -130,7 +129,6 @@ export class ScheduleUtils {
       };
     });
 
-    // Sort trains by actualArrivalTime
     trains.sort((a, b) => {
       const aArrival = a.actualArrivalTime!;
       const bArrival = b.actualArrivalTime!;

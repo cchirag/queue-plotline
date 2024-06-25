@@ -38,15 +38,16 @@ export const ScheduleChart = () => {
   };
 
   const handleTimeChange = (trainNumber: string, time: InternalClock) => {
-    // Update the train time
     const stagedTrains = ScheduleUtils.updateTrainTime(
       chart.trains,
       trainNumber,
       time,
       settings.platforms
     );
-    setChart({ ...chart, trains: stagedTrains });
     setSelectedTrainForEdit(null);
+    setChart({
+      trains: stagedTrains,
+    });
   };
 
   return (

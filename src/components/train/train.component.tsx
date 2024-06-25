@@ -32,7 +32,7 @@ export const Train = (props: TrainProps) => {
           return `translateX(${trackWidth * 2}px)`;
       }
     }
-  }, [trackRef, trainRef, train.status]);
+  }, [trackRef, trainRef, train]);
 
   const toTransform = useMemo(() => {
     if (trainRef.current && trackRef.current) {
@@ -49,7 +49,7 @@ export const Train = (props: TrainProps) => {
           return `translateX(${trackWidth * 2}px)`;
       }
     }
-  }, [trackRef, trainRef, train.status]);
+  }, [trackRef, trainRef, train]);
 
   const { transform: transformX } = useSpring({
     pause: clock.paused,
@@ -87,6 +87,10 @@ export const Train = (props: TrainProps) => {
       handleTrainStatus(train?.trainNumber ?? "", TrainStatus.DEPARTED);
     }
   };
+
+  useEffect(() => {
+    console.log("Train Rendered");
+  }, [train]);
 
   useEffect(() => {
     switch (train.status) {
