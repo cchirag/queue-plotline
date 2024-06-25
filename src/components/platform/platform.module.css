@@ -1,0 +1,26 @@
+.platformContainer{
+    width: 100%;
+    min-height: 108px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.platformInformationContainer{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 8px;
+}
+.track{
+    width: 100%;
+    object-fit: contain;
+    margin-top: 40px;
+}
+

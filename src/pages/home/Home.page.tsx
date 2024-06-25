@@ -4,30 +4,48 @@ import LottieReact from "lottie-react";
 import { Button, Slider } from "@mui/material";
 import { useFilePicker } from "use-file-picker";
 import { useState } from "react";
-import { TrainSchedule } from "../../utils";
 import { useSnackbar } from "../../components";
 import { SnackbarSeverity } from "../../enums";
 import { Fade } from "react-awesome-reveal";
 import { useSetRecoilState } from "recoil";
-import { InitialScheduleState } from "../../atoms";
+import { SettingsState, StagedScheduleState } from "../../atoms";
+import { InternalClockUtils, ScheduleUtils } from "../../utils";
+import { useInternalClock } from "../../hooks";
 
 export const HomePage = () => {
   const [numberOfPlatforms, setNumberOfPlatforms] = useState(2);
-  const setInitialScheduleState = useSetRecoilState(InitialScheduleState);
+  const setSettings = useSetRecoilState(SettingsState);
+  const setStagedSchedule = useSetRecoilState(StagedScheduleState);
   const { openFilePicker, filesContent } = useFilePicker({
     multiple: false,
     accept: ".csv",
     onFilesSuccessfullySelected: () => {},
   });
   const setMessage = useSnackbar();
+  const { setTime } = useInternalClock();
 
   const handleStartSimulation = async () => {
-    await TrainSchedule.isValid(filesContent[0])
-      .then((data) => {
-        setInitialScheduleState({
-          schedule: data,
-          platforms: numberOfPlatforms,
+    await ScheduleUtils.isValid(filesContent[0])
+      .then((trains) => {
+        const platforms: number[] = Array.from({
+          length: numberOfPlatforms,
+        }).map((_, index) => {
+          return index + 1;
         });
+        const stagedSchedule = ScheduleUtils.getStagedSchedule(
+          trains,
+          platforms,
+          false
+        );
+        setStagedSchedule({ trains: stagedSchedule });
+        setSettings({
+          platforms,
+          trains,
+        });
+        const firstTrain = stagedSchedule[0];
+        const time = firstTrain.arrivalTime;
+        const timeToStart = InternalClockUtils.subtractMinutes(time, 15);
+        setTime(timeToStart.day, timeToStart.hour, timeToStart.minute);
       })
       .catch((error) => {
         setMessage(error, SnackbarSeverity.ERROR);
@@ -71,9 +89,9 @@ export const HomePage = () => {
           <div className={classes.sliderContainer}>
             <label>{numberOfPlatforms} Platforms</label>
             <Slider
-              defaultValue={2}
+              defaultValue={1}
               step={1}
-              min={2}
+              min={1}
               max={20}
               value={numberOfPlatforms}
               onChange={(_, value) => setNumberOfPlatforms(value as number)}

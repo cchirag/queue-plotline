@@ -1,10 +1,16 @@
 import { atom } from "recoil";
 import { InternalClock } from "../types";
 
-export const InternalClockState = atom<InternalClock>({
+interface InternalClockState extends InternalClock {
+  paused: boolean;
+}
+
+export const InternalClockState = atom<InternalClockState>({
   key: "InternalClockState",
   default: {
-    hour: 0,
-    minute: 0,
+    day: 0o0,
+    hour: 0o0,
+    minute: 0o0,
+    paused: false,
   },
 });
