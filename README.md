@@ -2,6 +2,8 @@
 
 Queue is a railway station platform simulation application.
 
+![COVER GIF](./public/documentation/cover-gif.gif)
+
 ## Run the app
 
 Firstly, install all the dependencies by running:
@@ -42,3 +44,9 @@ npm run preview
 ## Other libraries
 - Recoil - State Management
 - Wouter - Router
+- Material UI - Components
+
+
+## Known bugs
+
+- Sometimes, the update function freezes some platforms.
