@@ -13,6 +13,8 @@ export type Train = {
   status: TrainStatus;
   timelines: {
     startArrival?: InternalClock;
+    endArrival?: InternalClock;
+    startDeparture?: InternalClock;
     endDeparture?: InternalClock;
   };
   trainImage: TrainImage;

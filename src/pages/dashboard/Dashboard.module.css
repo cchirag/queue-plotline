@@ -51,8 +51,8 @@
 
 .actionsContainer {
   width: 100%;
-  min-height: 80px;
-  max-height: 80px;
+  min-height: 40px;
+  max-height: 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -138,4 +138,5 @@
   padding: 12px;
   box-sizing: border-box;
   text-decoration: none;
+  font-size: 12px;
 }

@@ -5,20 +5,17 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useInternalClock } from "../../hooks";
 import { useMemo } from "react";
 import { Platforms, ScheduleChart } from "../../components";
-import { ReportState, SettingsState } from "../../atoms";
+import { SettingsState, StagedScheduleState } from "../../atoms";
 import { InternalClockUtils } from "../../utils";
 import { CSVLink } from "react-csv";
+import { TrainStatus } from "../../enums";
 export const DashboardPage = () => {
+  const stagedSchedule = useRecoilValue(StagedScheduleState);
   const setSettings = useSetRecoilState(SettingsState);
-  const report = useRecoilValue(ReportState);
   const { clock } = useInternalClock();
   const applicationTime = useMemo(() => {
     return InternalClockUtils.getTimeString(clock);
   }, [clock]);
-
-  const handlePrintReport = () => {
-    console.log(report);
-  };
 
   const headers = [
     { label: "Train Number", key: "trainNumber" },
@@ -31,7 +28,10 @@ export const DashboardPage = () => {
   ];
 
   const exportData = useMemo(() => {
-    return report.trains.map((train) => {
+    const trains = stagedSchedule.trains.filter(
+      (train) => train.status === TrainStatus.DEPARTED
+    );
+    return trains.map((train) => {
       return {
         trainNumber: train.trainNumber,
         platform: train.platform,
@@ -46,7 +46,7 @@ export const DashboardPage = () => {
         ),
       };
     });
-  }, [report]);
+  }, [stagedSchedule]);
 
   const exportFileName = `report-${applicationTime}.csv`;
 
@@ -60,9 +60,6 @@ export const DashboardPage = () => {
           <ScheduleChart />
         </div>
         <div className={classes.actionsContainer}>
-          <Button variant="contained" color="primary" fullWidth>
-            Update Schedule
-          </Button>
           <Button
             variant="outlined"
             color="primary"
@@ -93,7 +90,7 @@ export const DashboardPage = () => {
               filename={exportFileName}
               className={classes.exportButton}
             >
-              Export Report
+              EXPORT REPORT
             </CSVLink>
           </div>
           <div className={classes.platformsContentContainer}>

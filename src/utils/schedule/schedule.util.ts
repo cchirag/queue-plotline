@@ -28,6 +28,13 @@ export class ScheduleUtils {
           ) {
             reject("Data is not in the correct format");
           }
+          const trainNumbers = new Set<string>();
+          for (const schedule of json) {
+            if (trainNumbers.has(schedule.trainNumber)) {
+              reject("Train numbers are not unique");
+            }
+            trainNumbers.add(schedule.trainNumber);
+          }
           const newJson = json.map((schedule) => {
             return {
               ...schedule,
@@ -44,17 +51,50 @@ export class ScheduleUtils {
     });
   }
 
-  static getStagedSchedule(trains: Train[], platforms: number[]): Train[] {
+  static updateTrainTime(
+    trains: Train[],
+    trainNumber: string,
+    time: InternalClock,
+    platforms: number[]
+  ): Train[] {
+    const updatedTrains = trains.map((train) => {
+      const newTrain = { ...train };
+      if (train.trainNumber === trainNumber) {
+        newTrain.arrivalTime = time;
+        newTrain.departureTime = InternalClockUtils.addMinutes(
+          time,
+          newTrain.haltTime!
+        );
+      }
+      return newTrain;
+    });
+    const scheduledTrains = this.getStagedSchedule(
+      updatedTrains,
+      platforms,
+      true
+    );
+
+    return scheduledTrains;
+  }
+
+  static getStagedSchedule(
+    trains: Train[],
+    platforms: number[],
+    update: boolean
+  ): Train[] {
     // Sort trains by arrival time, priority, and original order
     trains.sort((a, b) => {
-      if (a.arrivalTime.day !== b.arrivalTime.day) {
-        return a.arrivalTime.day - b.arrivalTime.day;
+      const aArrival = a.arrivalTime;
+      const bArrival = b.arrivalTime;
+
+      if (aArrival.day !== bArrival.day) {
+        return aArrival.day - bArrival.day;
       }
-      if (a.arrivalTime.hour !== b.arrivalTime.hour) {
-        return a.arrivalTime.hour - b.arrivalTime.hour;
+      if (aArrival.hour !== bArrival.hour) {
+        return aArrival.hour - bArrival.hour;
       }
-      if (a.arrivalTime.minute !== b.arrivalTime.minute) {
-        return a.arrivalTime.minute - b.arrivalTime.minute;
+      if (aArrival.minute !== bArrival.minute) {
+        return aArrival.minute - bArrival.minute;
       }
       if (a.priority !== b.priority) {
         return a.priority.localeCompare(b.priority);
@@ -79,24 +119,29 @@ export class ScheduleUtils {
         actualDeparture
       );
       train.platform = assignedPlatform;
-      train.status = TrainStatus.SCHEDULED;
+      train.status = update ? train.status : TrainStatus.SCHEDULED;
       const randomIndex = Math.floor(Math.random() * 5);
       train.trainImage = Object.values(TrainImage)[randomIndex];
       train.timelines = {
         startArrival: InternalClockUtils.subtractMinutes(actualArrival, 10),
+        endArrival: actualArrival,
+        startDeparture: actualDeparture,
         endDeparture: InternalClockUtils.addMinutes(actualDeparture, 10),
       };
     });
 
     // Sort trains by actualArrivalTime
     trains.sort((a, b) => {
-      if (a.actualArrivalTime!.day !== b.actualArrivalTime!.day) {
-        return a.actualArrivalTime!.day - b.actualArrivalTime!.day;
+      const aArrival = a.actualArrivalTime!;
+      const bArrival = b.actualArrivalTime!;
+
+      if (aArrival.day !== bArrival.day) {
+        return aArrival.day - bArrival.day;
       }
-      if (a.actualArrivalTime!.hour !== b.actualArrivalTime!.hour) {
-        return a.actualArrivalTime!.hour - b.actualArrivalTime!.hour;
+      if (aArrival.hour !== bArrival.hour) {
+        return aArrival.hour - bArrival.hour;
       }
-      return a.actualArrivalTime!.minute - b.actualArrivalTime!.minute;
+      return aArrival.minute - bArrival.minute;
     });
 
     return trains;
@@ -118,7 +163,7 @@ export class ScheduleUtils {
     for (const platform of platforms) {
       if (
         !platformAvailability[platform] ||
-        this.isTimeBeforeOrEqual(platformAvailability[platform], actualArrival)
+        this.isTimeBefore(platformAvailability[platform], actualArrival)
       ) {
         assignedPlatform = platform;
         break;
@@ -130,7 +175,7 @@ export class ScheduleUtils {
         platformAvailability
       ).sort((a, b) => this.compareInternalClocks(a[1], b[1]))[0];
       assignedPlatform = parseInt(earliestFreePlatform);
-      actualArrival = InternalClockUtils.addMinutes(earliestFreeTime, 10);
+      actualArrival = InternalClockUtils.addMinutes(earliestFreeTime, 15);
       actualDeparture = InternalClockUtils.addMinutes(
         actualArrival,
         InternalClockUtils.getMinutesDiff(
@@ -143,7 +188,7 @@ export class ScheduleUtils {
     return { actualArrival, actualDeparture, assignedPlatform };
   }
 
-  private static isTimeBeforeOrEqual(
+  private static isTimeBefore(
     time1: InternalClock,
     time2: InternalClock
   ): boolean {
@@ -151,7 +196,7 @@ export class ScheduleUtils {
     if (time1.day > time2.day) return false;
     if (time1.hour < time2.hour) return true;
     if (time1.hour > time2.hour) return false;
-    return time1.minute <= time2.minute;
+    return time1.minute < time2.minute;
   }
 
   private static compareInternalClocks(

@@ -24,8 +24,16 @@ export const TrainInfoDialog = (props: TrainInfoDialogProps) => {
           <h2>Train {train.trainNumber}</h2>
           <h4>Platform {train.platform}</h4>
           <h4>
+            Scheduled Arrival Time:{" "}
+            {InternalClockUtils.getTimeString(train.arrivalTime)}
+          </h4>
+          <h4>
             Arrival Time:{" "}
             {InternalClockUtils.getTimeString(train.actualArrivalTime!)}
+          </h4>
+          <h4>
+            Scheduled Departure Time:{" "}
+            {InternalClockUtils.getTimeString(train.departureTime)}
           </h4>
           <h4>
             Departure Time:{" "}

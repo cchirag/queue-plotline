@@ -16,7 +16,7 @@ export const Platform = (props: PlatformProps) => {
   const stagedSchedule = useRecoilValue(StagedScheduleState);
 
   const trackRef = useRef<HTMLImageElement>(null);
-  const currentTrains = useMemo(() => {
+  const assignedTrains = useMemo(() => {
     const trains = stagedSchedule.trains.filter(
       (train) =>
         train.platform === platformNumber &&
@@ -24,7 +24,6 @@ export const Platform = (props: PlatformProps) => {
     );
     return trains;
   }, [platformNumber, stagedSchedule]);
-
 
   return (
     <div className={classes.platformContainer}>
@@ -37,7 +36,7 @@ export const Platform = (props: PlatformProps) => {
         className={classes.track}
         ref={trackRef}
       />
-      {currentTrains.map((train) => (
+      {assignedTrains.map((train) => (
         <Train
           key={train.trainNumber}
           trackRef={trackRef}

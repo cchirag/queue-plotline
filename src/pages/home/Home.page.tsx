@@ -34,7 +34,8 @@ export const HomePage = () => {
         });
         const stagedSchedule = ScheduleUtils.getStagedSchedule(
           trains,
-          platforms
+          platforms,
+          false
         );
         setStagedSchedule({ trains: stagedSchedule });
         setSettings({
@@ -43,7 +44,7 @@ export const HomePage = () => {
         });
         const firstTrain = stagedSchedule[0];
         const time = firstTrain.arrivalTime;
-        const timeToStart = InternalClockUtils.subtractMinutes(time, 10);
+        const timeToStart = InternalClockUtils.subtractMinutes(time, 15);
         setTime(timeToStart.day, timeToStart.hour, timeToStart.minute);
       })
       .catch((error) => {

@@ -1,17 +1,26 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import classes from "./schedule-chart.module.css";
-import { StagedScheduleState } from "../../atoms";
+import { SettingsState, StagedScheduleState } from "../../atoms";
 import { IconButton } from "@mui/material";
-import { InfoOutlined } from "@mui/icons-material";
+import { EditOutlined, InfoOutlined } from "@mui/icons-material";
 import { TrainStatus } from "../../enums";
-import { InternalClockUtils } from "../../utils";
-import { Train } from "../../types";
+import { InternalClockUtils, ScheduleUtils } from "../../utils";
+import { InternalClock, Train } from "../../types";
 import { useState } from "react";
 import { TrainInfoDialog } from "../train-info-dialog/train-info-dialog.component";
+import { TrainEditDialog } from "../train-edit-dialog/train-edit-dialog.component";
 
 export const ScheduleChart = () => {
-  const chart = useRecoilValue(StagedScheduleState);
+  const settings = useRecoilValue(SettingsState);
+  const [chart, setChart] = useRecoilState(StagedScheduleState);
+  const [selectedTrainForEdit, setSelectedTrainForEdit] =
+    useState<Train | null>(null);
   const [selectedTrain, setSelectedTrain] = useState<Train | null>(null);
+
+  const editIsDisabled = (train: Train) => {
+    return train.status !== TrainStatus.SCHEDULED;
+  };
+
   const handleSelectTrain = (train: Train) => {
     setSelectedTrain(train);
   };
@@ -19,6 +28,27 @@ export const ScheduleChart = () => {
   const handleCloseModal = () => {
     setSelectedTrain(null);
   };
+
+  const handleEditTrain = (train: Train) => {
+    setSelectedTrainForEdit(train);
+  };
+
+  const handleCloseEditModal = () => {
+    setSelectedTrainForEdit(null);
+  };
+
+  const handleTimeChange = (trainNumber: string, time: InternalClock) => {
+    // Update the train time
+    const stagedTrains = ScheduleUtils.updateTrainTime(
+      chart.trains,
+      trainNumber,
+      time,
+      settings.platforms
+    );
+    setChart({ ...chart, trains: stagedTrains });
+    setSelectedTrainForEdit(null);
+  };
+
   return (
     <div className={classes.container}>
       {chart.trains.map((train) => (
@@ -31,15 +61,29 @@ export const ScheduleChart = () => {
             {train.trainNumber} | P{train.platform} |{" "}
             {InternalClockUtils.getTimeString(train.actualArrivalTime!)}
           </h4>
-          <IconButton onClick={() => handleSelectTrain(train)}>
-            <InfoOutlined />
-          </IconButton>
+          <div className={classes.actionsContainer}>
+            <IconButton onClick={() => handleSelectTrain(train)}>
+              <InfoOutlined />
+            </IconButton>
+            <IconButton
+              onClick={() => handleEditTrain(train)}
+              disabled={editIsDisabled(train)}
+            >
+              <EditOutlined />
+            </IconButton>
+          </div>
         </div>
       ))}
       <TrainInfoDialog
         open={selectedTrain !== null}
         train={selectedTrain!}
         onClose={handleCloseModal}
+      />
+      <TrainEditDialog
+        open={selectedTrainForEdit !== null}
+        train={selectedTrainForEdit!}
+        onClose={handleCloseEditModal}
+        handleTimeChange={handleTimeChange}
       />
     </div>
   );

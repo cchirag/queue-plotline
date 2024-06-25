@@ -67,6 +67,23 @@ export class InternalClockUtils {
     return false;
   };
 
+  static isAfter = (time1: InternalClock, time2: InternalClock) => {
+    const { day: day1, hour: hour1, minute: minute1 } = time1;
+    const { day: day2, hour: hour2, minute: minute2 } = time2;
+
+    if (day1 > day2) {
+      return true;
+    } else if (day1 === day2) {
+      if (hour1 > hour2) {
+        return true;
+      } else if (hour1 === hour2) {
+        return minute1 > minute2;
+      }
+    }
+    return false;
+  }
+  
+
   static getMinutesDiff(
     startTime: InternalClock,
     endTime: InternalClock

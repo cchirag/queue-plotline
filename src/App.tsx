@@ -20,8 +20,12 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (internalClock.paused) return;
       setInternalClock((prev) => {
-        return InternalClockUtils.addMinutes(prev, 1);
+        return {
+          ...InternalClockUtils.addMinutes(prev, 1),
+          paused: prev.paused,
+        };
       });
     }, 1000);
     return () => clearInterval(interval);
